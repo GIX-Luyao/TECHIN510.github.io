@@ -523,6 +523,37 @@ code {
   color: #1a1a1a;
 }
 
+/* === Light Theme SVG Diagram Contrast Fix ===
+   Many slide diagrams embed hard-coded SVG colors (fill/stroke) tuned for the dark theme.
+   These overrides remap the known palette values to light-theme variables so text stays readable. */
+[data-theme="light"] .slide svg text[fill="#e8e4dd"] {
+  fill: var(--fg) !important;
+}
+
+[data-theme="light"] .slide svg *[stroke="#c1a778"] {
+  stroke: var(--gold) !important;
+}
+
+[data-theme="light"] .slide svg *[fill="#c1a778"] {
+  fill: var(--gold) !important;
+}
+
+[data-theme="light"] .slide svg text[fill="#c8d6c0"] {
+  fill: var(--green-soft) !important;
+}
+
+[data-theme="light"] .slide svg text[fill="#7dab6e"] {
+  fill: var(--green-soft) !important;
+}
+
+[data-theme="light"] .slide svg *[fill="#c45c5c"] {
+  fill: var(--red-soft) !important;
+}
+
+[data-theme="light"] .slide svg *[stroke="#c45c5c"] {
+  stroke: var(--red-soft) !important;
+}
+
 /* === Reduced Motion === */
 @media (prefers-reduced-motion: reduce) {
   html {
