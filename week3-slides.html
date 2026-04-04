@@ -163,7 +163,7 @@
     <div class="subtitle">Week 3: Sensor Data Visualization</div>
     <div class="dots"><span></span><span></span><span></span></div>
     <div class="meta-line">University of Washington &bull; Global Innovation Exchange</div>
-    <div class="slide-num">01 / 21</div>
+    <div class="slide-num">01 / 25</div>
   </section>
 
   <!-- ============================================================
@@ -203,7 +203,7 @@
       </div>
     </div>
 
-    <div class="slide-num">02 / 21</div>
+    <div class="slide-num">02 / 25</div>
   </section>
 
   <!-- ============================================================
@@ -262,7 +262,7 @@
       </p>
     </div>
 
-    <div class="slide-num">03 / 21</div>
+    <div class="slide-num">03 / 25</div>
   </section>
 
   <!-- ============================================================
@@ -273,19 +273,19 @@
     <div class="accent-line"></div>
 
     <div class="quote-block" style="text-align: left; max-width: 48ch;">
-      <p>"Should I go study in the GIX lounge right now? Temperature too high? Humidity uncomfortable? Is someone
+      <p>"Should I go study in the GIX room right now? Is it comfortable? Is someone
         already there?"</p>
     </div>
 
     <div style="max-width: 48ch; margin-top: clamp(0.8rem, 2vh, 1.5rem);">
       <p
         style="font-family: var(--font-serif); font-size: clamp(1rem, 2vw, 1.4rem); color: var(--gold); text-align: left;">
-        A $2 sensor and Python code can answer that question. Functionally, it is identical to what a building
+        A few sensors and Python code can answer that question. Functionally, it is identical to what a building
         management system asks 10,000 times per hour.
       </p>
     </div>
 
-    <div class="slide-num">04 / 21</div>
+    <div class="slide-num">04 / 25</div>
   </section>
 
   <!-- ============================================================
@@ -332,24 +332,298 @@
       </p>
     </div>
 
-    <div class="slide-num">05 / 21</div>
+    <div class="slide-num">05 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 6 — Divider: The Data Pipeline
+     SLIDE 6 — Divider: Streamlit (agentic intro)
   -->
   <section class="slide title-slide" id="s6">
     <div class="dots"><span></span><span></span><span></span></div>
     <div class="accent-line"></div>
-    <h1>The Data Pipeline</h1>
-    <div class="subtitle">9 stages from physical world to browser pixels</div>
-    <div class="slide-num">06 / 21</div>
+    <h1>Streamlit</h1>
+    <div class="subtitle">Agentic walkthrough: prompts &rarr; a small dashboard</div>
+    <div class="slide-num">06 / 25</div>
+  </section>
+
+  <!-- Instructor: remind students to read generated code before running (agentic literacy). -->
+
+  <!-- ============================================================
+     SLIDE 7 — Prompt 1: scaffold app.py
+  -->
+  <section class="slide" id="s7">
+    <div class="overline">Example 1</div>
+    <h2>Prompt 1 &mdash; Scaffold <span class="inline-code">app.py</span></h2>
+    <div class="accent-line"></div>
+
+    <div class="card" style="margin-bottom: clamp(0.45rem, 1.2vh, 0.85rem);">
+      <div class="col-label" style="color: var(--gold); margin-bottom: 0.35rem;">Your prompt to the agent</div>
+      <pre
+        style="margin: 0; white-space: pre-wrap; font-size: clamp(0.68rem, 1.05vw, 0.82rem); line-height: 1.45; color: var(--fg);"><code>Create a Streamlit web app. The app should set a page title about a &ldquo;GIX lounge comfort preview&rdquo;, add a short markdown subtitle, and display a line of plain text saying hello.</code></pre>
+    </div>
+
+    <div class="num-feature">
+      <div class="num-circle">P</div>
+      <div class="num-text">
+        <strong>Predict</strong>
+        <span>Before you run: what three pieces of text should appear, and in what order?</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">R</div>
+      <div class="num-text">
+        <strong>Run</strong>
+        <span>Save the file, run the command the agent gave you (should be <span class="inline-code">streamlit run
+            app.py</span>), confirm the browser opens.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">V</div>
+      <div class="num-text">
+        <strong>Verify</strong>
+        <span>Change the title string, save, and confirm the UI hot-reloads.</span>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: clamp(0.35rem, 1vh, 0.65rem);">
+      <p style="font-size: clamp(0.7rem, 1.1vw, 0.84rem); color: var(--fg-dim); margin: 0;">
+        Typical reply includes <span class="inline-code">st.title</span>, <span class="inline-code">st.markdown</span>,
+        <span class="inline-code">st.write</span> (or similar). Read the code before you run it.
+      </p>
+    </div>
+
+    <div class="slide-num">07 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 7 — 9-Stage Pipeline Overview (SVG)
+     SLIDE 8 — Prompt 2: slider + rerun
   -->
-  <section class="slide" id="s7">
+  <section class="slide" id="s8">
+    <div class="overline">Example 2</div>
+    <h2>Prompt 2 &mdash; Widgets and rerun</h2>
+    <div class="accent-line"></div>
+
+    <div class="card" style="margin-bottom: clamp(0.45rem, 1.2vh, 0.85rem);">
+      <div class="col-label" style="color: var(--gold); margin-bottom: 0.35rem;">Your prompt to the agent</div>
+      <pre
+        style="margin: 0; white-space: pre-wrap; font-size: clamp(0.68rem, 1.05vw, 0.82rem); line-height: 1.45; color: var(--fg);"><code>In the same app.py for the GIX lounge comfort preview, keep the page title, subtitle, and hello line from Prompt 1. Below that, add a slider for target comfort from 0 to 100 (0 = chilly, 100 = cozy) with default 50, and show the chosen value below the slider using st.write or st.metric. In a one-line comment in the code, note that Streamlit reruns the whole script top-to-bottom when the comfort slider moves.</code></pre>
+    </div>
+
+    <div class="num-feature">
+      <div class="num-circle">P</div>
+      <div class="num-text">
+        <strong>Predict</strong>
+        <span>When you drag the comfort slider, which lines of code run again?</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">R</div>
+      <div class="num-text">
+        <strong>Run</strong>
+        <span>Move the comfort slider; watch the value under it update.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">I</div>
+      <div class="num-text">
+        <strong>Investigate</strong>
+        <span>Ask the agent what happens if you read the comfort slider&rsquo;s value <em>above</em> the line where the
+          slider is created. Try the broken version once, then fix it.</span>
+      </div>
+    </div>
+
+    <div class="slide-num">08 / 25</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 9 — Prompt 2b: more UI widgets
+  -->
+  <section class="slide" id="s9">
+    <div class="overline">Example 2b</div>
+    <h2>Prompt 2b &mdash; More UI widgets</h2>
+    <div class="accent-line"></div>
+
+    <div class="card" style="margin-bottom: clamp(0.45rem, 1.2vh, 0.85rem);">
+      <div class="col-label" style="color: var(--gold); margin-bottom: 0.35rem;">Your prompt to the agent</div>
+      <pre
+        style="margin: 0; white-space: pre-wrap; font-size: clamp(0.68rem, 1.05vw, 0.82rem); line-height: 1.45; color: var(--fg);"><code>In the same GIX lounge comfort preview app, keep the title, subtitle, hello, and comfort slider from Prompts 1&ndash;2. Add three more widgets in the main area: st.checkbox labeled &ldquo;Simulate occupancy&rdquo; (default False); st.radio for lighting mood with options Warm glow, Neutral, Cool white; and st.text_input for an optional short note (placeholder like &ldquo;Note for this preview&rdquo;). Show the current values under the widgets with st.write or st.caption. Add a short comment that changing any widget triggers a rerun.</code></pre>
+    </div>
+
+    <div class="num-feature">
+      <div class="num-circle">P</div>
+      <div class="num-text">
+        <strong>Predict</strong>
+        <span>Which widgets return a value on the first run before the user touches them?</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">R</div>
+      <div class="num-text">
+        <strong>Run</strong>
+        <span>Toggle the checkbox, change the radio, type in the text field; confirm the displayed values update.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">V</div>
+      <div class="num-text">
+        <strong>Verify</strong>
+        <span>Comfort slider position is preserved when you change other widgets; no errors from widget order.</span>
+      </div>
+    </div>
+
+    <div class="slide-num">09 / 25</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 10 — Prompt 3: columns + sidebar
+  -->
+  <section class="slide" id="s10">
+    <div class="overline">Example 3</div>
+    <h2>Prompt 3 &mdash; Layout</h2>
+    <div class="accent-line"></div>
+
+    <div class="card" style="margin-bottom: clamp(0.45rem, 1.2vh, 0.85rem);">
+      <div class="col-label" style="color: var(--gold); margin-bottom: 0.35rem;">Your prompt to the agent</div>
+      <pre
+        style="margin: 0; white-space: pre-wrap; font-size: clamp(0.68rem, 1.05vw, 0.82rem); line-height: 1.45; color: var(--fg);"><code>Refactor the same GIX lounge comfort preview app.py: keep the page title and markdown subtitle from Prompt 1, plus the hello line, comfort slider, and the checkbox/radio/text widgets from Prompts 2&ndash;2b. Use st.columns: in the left column show a metric &ldquo;Feels like (demo &deg;F)&rdquo; with a number (placeholder or a simple function of the comfort slider); in the right column show &ldquo;Humidity (demo %)&rdquo; with a number. Put st.selectbox in the sidebar for &ldquo;Quiet zone&rdquo; vs &ldquo;Collaborative&rdquo; (labels only). Keep the hello line, comfort slider, and extra widgets below the columns or in a sensible place.</code></pre>
+    </div>
+
+    <div class="num-feature">
+      <div class="num-circle">P</div>
+      <div class="num-text">
+        <strong>Predict</strong>
+        <span>Changing the sidebar zone will rerun the script &mdash; should the comfort slider value reset? (Try it.)</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">V</div>
+      <div class="num-text">
+        <strong>Verify</strong>
+        <span>Both lounge metrics visible; zone selectbox triggers a rerun; comfort slider value behaves as you predicted; columns and sidebar behave as containers only.</span>
+      </div>
+    </div>
+
+    <div class="slide-num">10 / 25</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 11 — Prompt 4: DataFrame + chart + pipeline bridge
+  -->
+  <section class="slide" id="s11">
+    <div class="overline">Example 4</div>
+    <h2>Prompt 4 &mdash; DataFrame and chart</h2>
+    <div class="accent-line"></div>
+
+    <div class="card" style="margin-bottom: clamp(0.45rem, 1.2vh, 0.85rem);">
+      <div class="col-label" style="color: var(--gold); margin-bottom: 0.35rem;">Your prompt to the agent</div>
+      <pre
+        style="margin: 0; white-space: pre-wrap; font-size: clamp(0.68rem, 1.05vw, 0.82rem); line-height: 1.45; color: var(--fg);"><code>Build a small DataFrame with fake timestamps and a temperature column (10&ndash;20 rows). The temperature column should depend on the slider (e.g. base room temp plus a slider-driven offset or small noise). Display st.line_chart for temperature vs index or time. Optionally show st.dataframe with head() if it still fits on screen.</code></pre>
+    </div>
+
+    <div class="num-feature">
+      <div class="num-circle">V</div>
+      <div class="num-text">
+        <strong>Verify</strong>
+        <span>Dragging the slider changes the series shape or level; chart updates without errors.</span>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: clamp(0.45rem, 1.2vh, 0.85rem);">
+      <p style="font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg); margin: 0;">
+        Same chart APIs apply once <strong style="color: var(--gold);">real</strong> readings live in a DataFrame.
+        Next: the <strong style="color: var(--gold);">pipeline</strong> that gets them there.
+      </p>
+    </div>
+
+    <div class="slide-num">11 / 25</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 12 — Reruns, live regions, caching
+  -->
+  <section class="slide" id="s12">
+    <div class="overline">How Streamlit runs</div>
+    <h2>Reruns, <span class="inline-code">st.empty</span>, <span class="inline-code">st.rerun</span>, and caching</h2>
+    <div class="accent-line"></div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="col-label" style="color: var(--gold);">Widget reruns</div>
+        <p style="font-size: clamp(0.72rem, 1.15vw, 0.88rem); color: var(--fg); margin: 0 0 0.4rem 0;">Each time you
+          interact with a widget (slider, sidebar, checkbox, &hellip;), Streamlit runs your script <strong>from top to
+            bottom</strong> again. That is the normal &ldquo;refresh&rdquo;: a new run, same file, new widget state.</p>
+        <p style="font-size: clamp(0.7rem, 1.1vw, 0.84rem); color: var(--fg-dim); margin: 0;"><span
+            class="inline-code">st.rerun()</span> triggers the same kind of full rerun programmatically &mdash; for
+          example after you update <span class="inline-code">st.session_state</span> and want the page to redraw without
+          waiting for another click.</p>
+      </div>
+      <div class="card">
+        <div class="col-label" style="color: var(--gold);">Live-looking updates</div>
+        <p style="font-size: clamp(0.72rem, 1.15vw, 0.88rem); color: var(--fg); margin: 0 0 0.4rem 0;"><span
+            class="inline-code">st.empty()</span> reserves a <strong>placeholder</strong>. You can replace only that slot
+          (e.g. <span class="inline-code">with placeholder.container():</span> or <span
+            class="inline-code">placeholder.write(...)</span>) when data arrives on a timer or stream &mdash; so the
+          dashboard can feel live without relying on a widget event every time.</p>
+        <p style="font-size: clamp(0.7rem, 1.1vw, 0.84rem); color: var(--fg-dim); margin: 0;">Contrast: a plain <span
+            class="inline-code">while True</span> that redraws everything can fight Streamlit&rsquo;s rerun model; prefer
+          updating a bounded buffer (e.g. <span class="inline-code">deque(maxlen=20)</span>) inside a controlled loop
+          paired with a placeholder.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: clamp(0.3rem, 0.9vh, 0.55rem);">
+      <div class="col-label" style="color: var(--gold); margin-bottom: 0.3rem;">Illustrative <span
+          class="inline-code">app.py</span> fragment</div>
+      <pre
+        style="margin: 0; max-height: 34vh; overflow-y: auto; white-space: pre; font-size: clamp(0.62rem, 0.95vw, 0.76rem); line-height: 1.42; color: var(--fg);"><code>import streamlit as st
+import pandas as pd
+
+@st.cache_data
+def load_rows(csv_path: str) -&gt; pd.DataFrame:
+    return pd.read_csv(csv_path)  # slow I/O; skipped when path unchanged
+
+if "ticks" not in st.session_state:
+    st.session_state.ticks = 0
+
+live = st.empty()
+df = load_rows("sample.csv")
+live.metric("Cached rows", len(df))
+
+if st.button("Increment + rerun"):
+    st.session_state.ticks += 1
+    st.rerun()  # restarts script from top (like a widget-driven rerun)
+
+st.caption(f"Session ticks: {st.session_state.ticks}")</code></pre>
+    </div>
+
+    <div class="highlight-box" style="margin-top: clamp(0.25rem, 0.8vh, 0.5rem);">
+      <p style="font-size: clamp(0.68rem, 1.05vw, 0.84rem); color: var(--fg); margin: 0;">
+        <strong style="color: var(--gold);">Cache status:</strong> decorate slow work with <span
+          class="inline-code">@st.cache_data</span> (serializable return values) or <span
+          class="inline-code">@st.cache_resource</span> (connections, models). On rerun, Streamlit skips the cached body
+        when inputs are unchanged. Call <span class="inline-code">st.cache_data.clear()</span> to invalidate if the file
+        behind <span class="inline-code">csv_path</span> changes on disk.
+      </p>
+    </div>
+
+    <div class="slide-num">12 / 25</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 13 — Divider: The Data Pipeline
+  -->
+  <section class="slide title-slide" id="s13">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="accent-line"></div>
+    <h1>The Data Pipeline</h1>
+    <div class="subtitle">9 stages from physical world to browser pixels</div>
+    <div class="slide-num">13 / 25</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 14 — 9-Stage Pipeline Overview (SVG)
+  -->
+  <section class="slide" id="s14">
     <div class="overline">Pipeline Architecture</div>
     <h2>The 9-Stage Data Pipeline</h2>
     <div class="accent-line"></div>
@@ -476,13 +750,13 @@
       </p>
     </div>
 
-    <div class="slide-num">07 / 21</div>
+    <div class="slide-num">14 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 8 — NEW B2: Pipes and Filters Pattern
+     SLIDE 15 — NEW B2: Pipes and Filters Pattern
   -->
-  <section class="slide" id="s8">
+  <section class="slide" id="s15">
     <div class="overline">Architecture Pattern</div>
     <h2>The Pattern Has a Name: Pipe-and-Filter Architecture</h2>
     <div class="accent-line"></div>
@@ -537,17 +811,17 @@
       <p style="font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg);">
         <strong style="color: var(--gold);">Debug mindset:</strong> Trace stage-by-stage. In our course pipeline:
         sensor &rarr; formatter &rarr; <strong>Stage 5 parse</strong> &rarr; <strong>Stage 6 validate</strong> &rarr;
-        chart. Ask <em>&ldquo;which filter broke the contract?&rdquo;</em>, not just &ldquo;why is the chart wrong?&rdquo;
+        chart.         Ask <em>&ldquo;which filter broke the contract?&rdquo;</em>, not just &ldquo;why is the chart wrong?&rdquo;
       </p>
     </div>
 
-    <div class="slide-num">08 / 21</div>
+    <div class="slide-num">15 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 9 — NEW B4: Signal Noise + Error Budget
+     SLIDE 16 — NEW B4: Signal Noise + Error Budget
   -->
-  <section class="slide" id="s9">
+  <section class="slide" id="s16">
     <div class="overline">Physics of Imperfection</div>
     <h2>Why Does 22.5&deg;C Keep Flickering?</h2>
     <div class="accent-line"></div>
@@ -603,13 +877,13 @@
       </div>
     </div>
 
-    <div class="slide-num">09 / 21</div>
+    <div class="slide-num">16 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 10 — Three Key Boundaries (SVG)
+     SLIDE 17 — Three Key Boundaries (SVG)
   -->
-  <section class="slide" id="s10">
+  <section class="slide" id="s17">
     <div class="overline">Critical Boundaries</div>
     <h2>Three Key Boundaries</h2>
     <div class="accent-line"></div>
@@ -661,17 +935,17 @@
         <text x="750" y="140" text-anchor="middle" fill="#e8e4dd" font-family="Inter, sans-serif" font-size="10"
           opacity="0.6">Last chance to catch unit</text>
         <text x="750" y="155" text-anchor="middle" fill="#e8e4dd" font-family="Inter, sans-serif" font-size="10"
-          opacity="0.6">errors before the user sees it</text>
+          opacity="0.6">        errors before the user sees it</text>
       </svg>
     </div>
 
-    <div class="slide-num">10 / 21</div>
+    <div class="slide-num">17 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 11 — NEW B3: Writing a Format Contract
+     SLIDE 18 — NEW B3: Writing a Format Contract
   -->
-  <section class="slide" id="s11">
+  <section class="slide" id="s18">
     <div class="overline">Systems Engineering</div>
     <h2>Writing a Format Contract</h2>
     <div class="accent-line"></div>
@@ -703,13 +977,13 @@
       </p>
     </div>
 
-    <div class="slide-num">11 / 21</div>
+    <div class="slide-num">18 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 12 — Three Verification Points
+     SLIDE 19 — Three Verification Points
   -->
-  <section class="slide" id="s12">
+  <section class="slide" id="s19">
     <div class="overline">Verification Points</div>
     <h2>Three Verification Points</h2>
     <div class="accent-line"></div>
@@ -746,13 +1020,13 @@
       </p>
     </div>
 
-    <div class="slide-num">12 / 21</div>
+    <div class="slide-num">19 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 13 — Quote: Chart renders vs correct data
+     SLIDE 20 — Quote: Chart renders vs correct data
   -->
-  <section class="slide title-slide" id="s13">
+  <section class="slide title-slide" id="s20">
     <div class="overline">The Dangerous Assumption</div>
     <div class="accent-line"></div>
 
@@ -768,143 +1042,24 @@
       </p>
     </div>
 
-    <div class="slide-num">13 / 21</div>
+    <div class="slide-num">20 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 14 — Divider: Live Dashboard
+     SLIDE 21 — Divider: Live Dashboard
   -->
-  <section class="slide title-slide" id="s14">
+  <section class="slide title-slide" id="s21">
     <div class="dots"><span></span><span></span><span></span></div>
     <div class="accent-line"></div>
     <h1>Live Dashboard</h1>
     <div class="subtitle">Streamlit + Plotly &mdash; Stages 7 through 9</div>
-    <div class="slide-num">14 / 21</div>
+    <div class="slide-num">21 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 15 — Static Dashboard
+     SLIDE 22 — NEW B8: Staleness + Observability + Failure Handling
   -->
-  <section class="slide" id="s15">
-    <div class="overline">Phase A</div>
-    <h2>Static Dashboard</h2>
-    <div class="accent-line"></div>
-
-    <p style="margin-bottom: clamp(0.35rem, 1vh, 0.6rem); color: var(--fg-dim); font-size: clamp(0.75rem, 1.2vw, 0.9rem);">
-      <strong style="color: var(--gold);">I/O vs. logic:</strong> serial reads belong in <span
-        class="inline-code">get_readings()</span>; parsing one CSV line is a <strong>pure function</strong> you can test
-      without hardware.
-    </p>
-
-    <pre><code><span style="color: var(--gold);">def</span> parse_csv_line(line: <span style="color: var(--fg-dim);">str</span>) -> <span style="color: var(--fg-dim);">dict</span>:
-    ts, t, h, d = line.strip().split(<span style="color: #ce9178;">","</span>)
-    <span style="color: var(--gold);">return</span> {
-        <span style="color: #ce9178;">"timestamp"</span>: <span style="color: var(--gold);">float</span>(ts),
-        <span style="color: #ce9178;">"temperature_c"</span>: <span style="color: var(--gold);">float</span>(t),
-        <span style="color: #ce9178;">"humidity_pct"</span>: <span style="color: var(--gold);">float</span>(h),
-        <span style="color: #ce9178;">"distance_cm"</span>: <span style="color: var(--gold);">float</span>(d),
-    }</code></pre>
-
-    <pre><code><span style="color: var(--gold);">import</span> streamlit <span style="color: var(--gold);">as</span> st
-<span style="color: var(--gold);">import</span> pandas <span style="color: var(--gold);">as</span> pd
-
-st.title("GIX Study Space Monitor")
-st.caption("Is the lounge comfortable right now?")
-
-df = get_readings(n=10)
-latest = df.iloc[-1]
-
-col1, col2, col3 = st.columns(3)
-col1.metric(
-    label="Temperature",
-    value=f"{latest['temperature_c']:.1f}&deg;C",
-    delta=f"{latest['temperature_c'] - df['temperature_c'].mean():.1f}&deg;C vs avg"
-)
-col2.metric(label="Humidity", value=f"{latest['humidity_pct']:.1f}%")
-col3.metric(label="Proximity", value=f"{latest['distance_cm']:.1f} cm")
-
-st.subheader("Temperature Trend")
-st.line_chart(df.set_index('timestamp')['temperature_c'])</code></pre>
-
-    <div class="slide-num">15 / 21</div>
-  </section>
-
-  <!-- ============================================================
-     SLIDE 16 — Live Dashboard with st.empty()
-  -->
-  <section class="slide" id="s16">
-    <div class="overline">Phase B</div>
-    <h2>Live Dashboard with <span class="inline-code">st.empty()</span></h2>
-    <div class="accent-line"></div>
-
-    <pre><code><span style="color: var(--gold);">import</span> streamlit <span style="color: var(--gold);">as</span> st
-<span style="color: var(--gold);">import</span> time, collections, pandas <span style="color: var(--gold);">as</span> pd
-
-st.title("GIX Study Space Monitor &mdash; LIVE")
-
-placeholder = st.empty()                <span style="color: var(--fg-dim);"># Reserve a UI slot</span>
-readings_buffer = collections.deque(maxlen=20)  <span style="color: var(--fg-dim);"># Rolling buffer</span>
-
-<span style="color: var(--gold);">while</span> True:
-    reading = get_latest_reading()
-    <span style="color: var(--gold);">if</span> reading:
-        readings_buffer.append(reading)
-        df = pd.DataFrame(readings_buffer)
-        <span style="color: var(--gold);">with</span> placeholder.container():
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Temperature", f"{reading['temperature_c']:.1f}&deg;C")
-            col2.metric("Humidity", f"{reading['humidity_pct']:.1f}%")
-            col3.metric("Proximity", f"{reading['distance_cm']:.1f} cm")
-            <span style="color: var(--gold);">if</span> len(df) > 1:
-                st.line_chart(df.set_index('timestamp')['temperature_c'])
-    time.sleep(2)</code></pre>
-
-    <div class="slide-num">16 / 21</div>
-  </section>
-
-  <!-- ============================================================
-     SLIDE 17 — Normal Streamlit vs st.empty()
-  -->
-  <section class="slide" id="s17">
-    <div class="overline">The Key Difference</div>
-    <h2>Normal Streamlit vs. <span class="inline-code">st.empty()</span></h2>
-    <div class="accent-line"></div>
-
-    <div class="two-col">
-      <div class="card">
-        <div class="col-label bad">Normal Streamlit</div>
-        <p>Script re-runs <strong>top to bottom</strong> on every interaction.</p>
-        <p style="margin-top: 0.5rem; font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim);">
-          Great for forms and filters. Not designed for a sensor that emits data every 2 seconds on its own. Everything
-          flickers and resets.
-        </p>
-      </div>
-      <div class="card">
-        <div class="col-label good">With st.empty()</div>
-        <p>Script runs <strong>once</strong>. The placeholder slot gets <strong>replaced</strong> each iteration.</p>
-        <p style="margin-top: 0.5rem; font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim);">
-          Rest of UI stays stable. Only the changed region repaints. No flicker. Memory-safe with <span
-            class="inline-code">deque(maxlen=20)</span>.
-        </p>
-      </div>
-    </div>
-
-    <div class="highlight-box" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
-      <p style="font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg);">
-        <strong style="color: var(--gold);">Five deliberate decisions:</strong> <span
-          class="inline-code">st.empty()</span> once, <span class="inline-code">placeholder.container()</span> replaces,
-        <span class="inline-code">while True</span> drives, <span class="inline-code">deque(maxlen=20)</span> bounds
-        memory, <span class="inline-code">sleep(2)</span> matches sensor rate.
-      </p>
-    </div>
-
-    <div class="slide-num">17 / 21</div>
-  </section>
-
-  <!-- ============================================================
-     SLIDE 18 — NEW B8: Staleness + Observability + Failure Handling
-  -->
-  <section class="slide" id="s18">
+  <section class="slide" id="s22">
     <div class="overline">Observability</div>
     <h2>Is the Pipeline Still Running?</h2>
     <div class="accent-line"></div>
@@ -959,24 +1114,24 @@ last_updated = time.time()
       </p>
     </div>
 
-    <div class="slide-num">18 / 21</div>
+    <div class="slide-num">22 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 19 — Divider: Physical Validation
+     SLIDE 23 — Divider: Physical Validation
   -->
-  <section class="slide title-slide" id="s19">
+  <section class="slide title-slide" id="s23">
     <div class="dots"><span></span><span></span><span></span></div>
     <div class="accent-line"></div>
     <h1>Physical Validation</h1>
     <div class="subtitle">The move from Understand to Evaluate on Bloom's Taxonomy</div>
-    <div class="slide-num">19 / 21</div>
+    <div class="slide-num">23 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 20 — Hardware Dashboard Verification Checklist
+     SLIDE 24 — Hardware Dashboard Verification Checklist
   -->
-  <section class="slide" id="s20">
+  <section class="slide" id="s24">
     <div class="overline">Verification</div>
     <h2>Hardware Dashboard Verification Checklist</h2>
     <div class="accent-line"></div>
@@ -1018,70 +1173,35 @@ last_updated = time.time()
       </div>
     </div>
 
-    <div class="slide-num">20 / 21</div>
+    <div class="slide-num">24 / 25</div>
   </section>
 
   <!-- ============================================================
-     SLIDE 21 — Fault Localization (Think-Pair-Share)
+     SLIDE 25 — Lab 3 preview
   -->
-  <section class="slide" id="s21">
-    <div class="overline">Think-Pair-Share</div>
-    <h2>Fault Localization</h2>
+  <section class="slide" id="s25">
+    <div class="overline">Up Next in Lab</div>
+    <h2>Preview: Lab 3 &mdash; Makerspace hardware</h2>
     <div class="accent-line"></div>
 
-    <div class="highlight-box" style="margin-bottom: clamp(0.8rem, 2vh, 1.2rem);">
-      <p
-        style="font-family: var(--font-serif); font-size: clamp(1rem, 1.8vw, 1.3rem); color: #f5f0e8; font-style: italic;">
-        The temperature sensor reads &minus;10&deg;C. The room is clearly not &minus;10&deg;C. Which pipeline stage
-        failed?
-      </p>
-    </div>
-
-    <div class="num-feature">
-      <div class="num-circle">1</div>
-      <div class="num-text">
-        <strong>Stage 1&ndash;2: Loose wire</strong>
-        <span>Physical hardware failure. The sensor never got a valid reading from the physical world.</span>
-      </div>
-    </div>
-    <div class="num-feature">
-      <div class="num-circle">2</div>
-      <div class="num-text">
-        <strong>Stage 3: Firmware bug</strong>
-        <span>The sensor read correctly but the code formatted the wrong register value in the CSV string.</span>
-      </div>
-    </div>
-    <div class="num-feature">
-      <div class="num-circle">3</div>
-      <div class="num-text">
-        <strong>Stage 5&ndash;6: Parsing error</strong>
-        <span>Firmware was fine. The laptop dropped a character and produced gibberish that cast to &minus;10.</span>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
-      <p style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); color: var(--fg-dim);">
-        Three different failure modes. One identical symptom on the dashboard. This is why you <strong
-          style="color: var(--gold);">trace the pipeline</strong>, not just the chart. Pre-wired backup boards are
-        available at the front if hardware isn&rsquo;t cooperating &mdash; same learning outcome.
-      </p>
-    </div>
+    <p style="margin-bottom: clamp(0.5rem, 1.5vh, 1rem);">
+      In Lab 3 you will work with physical sensors and a microcontroller. <strong>Visit the makerspace</strong> and talk
+      with the crew there to check out the hardware you need.
+    </p>
 
     <div class="highlight-box" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
-      <strong>Scenario:</strong> Your dashboard shows temperature readings, but every 10th value displays as <span
-        class="inline-code">0.0&deg;C</span> even though the sensor log shows valid data. The pipeline has 9 stages
-      &mdash; where would you start investigating? Narrow it down with your partner.
+      <p style="font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg);">
+        <strong style="color: var(--gold);">Your choice:</strong> Which sensors you use is up to you &mdash; pick
+        something that fits what you want to measure. 
+      </p>
     </div>
-    <details style="margin-top: 0.75rem; color: var(--fg-dim);">
-      <summary style="cursor:pointer; color: var(--gold);">Reveal: Likely fault location</summary>
-      <p style="margin-top: 0.5rem;">Stages 5&ndash;6 (parse line &rarr; validate &rarr; DataFrame) &mdash; the parser
-        may be treating a delimiter edge case as a zero value. Check the raw serial output against the parsed
-        DataFrame.</p>
-    </details>
 
-    <div class="slide-num">21 / 21</div>
+    <p style="margin-top: clamp(0.5rem, 1.5vh, 1rem); color: var(--fg-dim);">
+      Plan ahead: know what you want to measure (or a short list of options) before you go, so checkout goes smoothly.
+    </p>
+
+    <div class="slide-num">25 / 25</div>
   </section>
-
 
   <script>
     (function () {
