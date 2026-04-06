@@ -802,73 +802,9 @@ Don't break things.</code></pre>
   </section>
 
   <!-- ============================================================
-     SLIDE 25 — Slash Commands
+     SLIDE 25 — Context Compaction Diagram
   -->
   <section class="slide" id="s25">
-    <div class="overline">Custom Workflows &middot; REFERENCE</div>
-    <h2>Slash Commands</h2>
-    <div class="accent-line"></div>
-
-    <p style="margin-bottom: clamp(0.5rem, 1.5vh, 1rem); font-size: clamp(0.8rem, 1.3vw, 1rem);">
-      CLAUDE.md handles persistent context. Slash commands handle <strong style="color: var(--gold);">repeatable
-        workflows</strong>.
-    </p>
-
-    <pre><code><span style="color: var(--fg-dim);"># .claude/commands/spec.md</span>
-
-# /spec &mdash; Write a specification before any code
-
-When this command is invoked:
-1. Ask the user what feature they want to build
-2. Write a plain-English specification covering:
-   - What the feature does (user-facing behavior)
-   - What it does NOT do (explicit scope limits)
-   - Edge cases to handle
-   - Data inputs and outputs
-3. Ask the user to confirm or revise the spec
-4. Only begin implementation after explicit approval</code></pre>
-
-    <div class="card" style="margin-top: clamp(0.3rem, 1vh, 0.6rem);">
-      <p style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); color: var(--fg-dim);">
-        The spec command lives in the repo &mdash; everyone on the team gets the same workflow.
-      </p>
-    </div>
-
-    <div class="slide-num">25 / 48</div>
-  </section>
-
-  <!-- ============================================================
-     SLIDE 26 — Hooks
-  -->
-  <section class="slide" id="s26">
-    <div class="overline">Automated Quality Gates &middot; REFERENCE</div>
-    <h2>Hooks</h2>
-    <div class="accent-line"></div>
-
-    <p style="margin-bottom: clamp(0.5rem, 1.5vh, 1rem); font-size: clamp(0.8rem, 1.3vw, 1rem);">
-      Hooks handle <strong style="color: var(--gold);">automated consequences</strong> &mdash; things that happen
-      automatically after the agent edits a file.
-    </p>
-
-    <pre><code>Hook: PostToolUse (after any .py file is edited)
-&boxur;&boxh;&boxh; black app.py          &rarr; auto-format code style
-&boxur;&boxh;&boxh; ruff check app.py     &rarr; lint for common mistakes
-&boxur;&boxh;&boxh; mypy app.py           &rarr; run type checking</code></pre>
-
-    <div class="card" style="margin-top: clamp(0.3rem, 1vh, 0.6rem);">
-      <p style="font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg);">
-        The agent edits a file &rarr; it&rsquo;s automatically formatted, linted, and type-checked. If there&rsquo;s an
-        error, the agent sees it and fixes it in the same turn.
-      </p>
-    </div>
-
-    <div class="slide-num">26 / 48</div>
-  </section>
-
-  <!-- ============================================================
-     SLIDE 27 — Context Compaction Diagram
-  -->
-  <section class="slide" id="s27">
     <div class="overline">Context Window &middot; REFERENCE</div>
     <h2>Context Compaction</h2>
     <div class="accent-line"></div>
@@ -950,6 +886,70 @@ When this command is invoked:
         Design &ldquo;sticky&rdquo; rules that survive compaction &mdash; put critical constraints in <span
           class="inline-code">CLAUDE.md</span>,
         not just in chat history.
+      </p>
+    </div>
+
+    <div class="slide-num">25 / 48</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 26 — Slash Commands
+  -->
+  <section class="slide" id="s26">
+    <div class="overline">Custom Workflows &middot; REFERENCE</div>
+    <h2>Slash Commands</h2>
+    <div class="accent-line"></div>
+
+    <p style="margin-bottom: clamp(0.5rem, 1.5vh, 1rem); font-size: clamp(0.8rem, 1.3vw, 1rem);">
+      CLAUDE.md handles persistent context. Slash commands handle <strong style="color: var(--gold);">repeatable
+        workflows</strong>.
+    </p>
+
+    <pre><code><span style="color: var(--fg-dim);"># .claude/commands/spec.md</span>
+
+# /spec &mdash; Write a specification before any code
+
+When this command is invoked:
+1. Ask the user what feature they want to build
+2. Write a plain-English specification covering:
+   - What the feature does (user-facing behavior)
+   - What it does NOT do (explicit scope limits)
+   - Edge cases to handle
+   - Data inputs and outputs
+3. Ask the user to confirm or revise the spec
+4. Only begin implementation after explicit approval</code></pre>
+
+    <div class="card" style="margin-top: clamp(0.3rem, 1vh, 0.6rem);">
+      <p style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); color: var(--fg-dim);">
+        The spec command lives in the repo &mdash; everyone on the team gets the same workflow.
+      </p>
+    </div>
+
+    <div class="slide-num">26 / 48</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 27 — Hooks
+  -->
+  <section class="slide" id="s27">
+    <div class="overline">Automated Quality Gates &middot; REFERENCE</div>
+    <h2>Hooks</h2>
+    <div class="accent-line"></div>
+
+    <p style="margin-bottom: clamp(0.5rem, 1.5vh, 1rem); font-size: clamp(0.8rem, 1.3vw, 1rem);">
+      Hooks handle <strong style="color: var(--gold);">automated consequences</strong> &mdash; things that happen
+      automatically after the agent edits a file.
+    </p>
+
+    <pre><code>Hook: PostToolUse (after any .py file is edited)
+&boxur;&boxh;&boxh; black app.py          &rarr; auto-format code style
+&boxur;&boxh;&boxh; ruff check app.py     &rarr; lint for common mistakes
+&boxur;&boxh;&boxh; mypy app.py           &rarr; run type checking</code></pre>
+
+    <div class="card" style="margin-top: clamp(0.3rem, 1vh, 0.6rem);">
+      <p style="font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg);">
+        The agent edits a file &rarr; it&rsquo;s automatically formatted, linted, and type-checked. If there&rsquo;s an
+        error, the agent sees it and fixes it in the same turn.
       </p>
     </div>
 
