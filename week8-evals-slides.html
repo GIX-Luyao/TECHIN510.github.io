@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TECHIN 510 Week 8 — Evals &amp; Observability</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/slides.css">
+  <link rel="stylesheet" href="css/site-nav.css">
+</head>
+
+<body>
+
+  <nav class="site-nav" id="site-nav">
+    <a href="index.html" class="site-nav-brand">TECHIN 510</a>
+    <button class="site-nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="site-nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="week1-slides.html">W1</a>
+      <a href="week2-slides.html">W2</a>
+      <a href="week3-slides.html">W3</a>
+      <a href="week4-slides.html">W4</a>
+      <a href="week5-slides.html">W5</a>
+      <a href="week5-tools-slides.html">W5+</a>
+      <a href="week6-slides.html">W6</a>
+      <a href="week7-agentic-os-slides.html">W7</a>
+      <a href="week8-evals-slides.html">W8</a>
+    </div>
+  </nav>
+
+  <div id="progress"></div>
+  <div id="nav-dots"></div>
+  <button class="edit-btn" id="editBtn" title="Toggle edit mode (E)">E</button>
+
+  <!-- ============================================================
+     SLIDE 1 — Title
+  -->
+  <section class="slide title-slide" id="s1">
+    <div class="overline">TECHIN 510 &mdash; Spring 2026</div>
+    <div class="accent-line"></div>
+    <h1>Does Your System<br>Actually Work?</h1>
+    <div class="subtitle">Week 8: Evals, observability, and regression testing for agents</div>
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="meta-line">University of Washington &bull; Global Innovation Exchange</div>
+    <div class="slide-num">01 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 2 — Learning Objectives
+  -->
+  <section class="slide" id="s2">
+    <div class="overline">What You Will Learn</div>
+    <h2>Learning Objectives</h2>
+    <div class="accent-line"></div>
+
+    <div class="num-feature">
+      <div class="num-circle">1</div>
+      <div class="num-text">
+        <strong>Distinguish tests, evals, and observability &mdash; and know when each one breaks</strong>
+        <span>Deterministic <span class="inline-code">assert</span> is the wrong tool when temperature &ne; 0.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">2</div>
+      <div class="num-text">
+        <strong>Design and implement systematic tests and evaluations</strong>
+        <span>Structured traces, golden datasets, rubric and judge scoring, regression runs, ship memos.</span>
+      </div>
+    </div>
+
+    <div class="slide-num">02 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 3 — Motivation: You Built It. Does It Work?
+  -->
+  <section class="slide" id="s3">
+    <div class="overline">From Last Week</div>
+    <h2>Agentic OS: Does It Work?</h2>
+    <div class="accent-line"></div>
+
+    <div class="highlight-box" style="margin-bottom: clamp(0.6rem, 1.8vh, 1.2rem);">
+      <p style="font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: var(--fg);">
+        Last week you built an agentic OS. Does it work? How do you know?
+      </p>
+    </div>
+
+    <div class="slide-num">03 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 4 — Tests vs Evals vs Observability
+  -->
+  <section class="slide" id="s4">
+    <div class="overline">Three Different Questions</div>
+    <h2>Tests, Evals, Observability</h2>
+    <div class="accent-line"></div>
+
+    <table class="slide-table" style="width: 100%; font-size: clamp(0.74rem, 1.2vw, 0.9rem); border-collapse: collapse;">
+      <thead>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.4);">
+          <th style="text-align: left; padding: 0.5em 0.4em; color: var(--gold);">Layer</th>
+          <th style="text-align: left; padding: 0.5em 0.4em; color: var(--gold);">Answers</th>
+          <th style="text-align: left; padding: 0.5em 0.4em; color: var(--gold);">Verdict shape</th>
+          <th style="text-align: left; padding: 0.5em 0.4em; color: var(--gold);">When it runs</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.12);">
+          <td style="padding: 0.5em 0.4em;"><strong>Tests</strong></td>
+          <td style="padding: 0.5em 0.4em;">Did the code run?</td>
+          <td style="padding: 0.5em 0.4em;">Pass / fail</td>
+          <td style="padding: 0.5em 0.4em;">On every commit</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.12);">
+          <td style="padding: 0.5em 0.4em;"><strong>Evals</strong></td>
+          <td style="padding: 0.5em 0.4em;">Was the output good?</td>
+          <td style="padding: 0.5em 0.4em;">Score, distribution</td>
+          <td style="padding: 0.5em 0.4em;">On prompt / model change</td>
+        </tr>
+        <tr>
+          <td style="padding: 0.5em 0.4em;"><strong>Observability</strong></td>
+          <td style="padding: 0.5em 0.4em;">Is it still good in production?</td>
+          <td style="padding: 0.5em 0.4em;">Trends, anomalies, drift</td>
+          <td style="padding: 0.5em 0.4em;">Continuously</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim); text-align: center;">
+      In practice people use <em>test</em>, <em>validation</em>, and <em>eval</em> interchangeably
+    </p>
+
+    <div class="slide-num">04 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 5 — Six Weeks of Tests (recap)
+  -->
+  <section class="slide" id="s5">
+    <div class="overline">You've Done This Already</div>
+    <h2>Tests</h2>
+    <div class="accent-line"></div>
+
+    <p style="font-size: clamp(0.85rem, 1.4vw, 1.05rem); color: var(--fg); margin-bottom: clamp(0.5rem, 1.5vh, 1rem);">
+      All deterministic. Pass / fail. 
+    </p>
+
+    <table class="slide-table" style="width: 100%; font-size: clamp(0.72rem, 1.15vw, 0.88rem); border-collapse: collapse;">
+      <thead>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.4);">
+          <th style="text-align: left; padding: 0.45em 0.4em; color: var(--gold); width: 6%;">Wk</th>
+          <th style="text-align: left; padding: 0.45em 0.4em; color: var(--gold); width: 26%;">Pattern</th>
+          <th style="text-align: left; padding: 0.45em 0.4em; color: var(--gold);">What you did</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.12);">
+          <td style="padding: 0.45em 0.4em;"><strong>1</strong></td>
+          <td style="padding: 0.45em 0.4em;">Smoke test + assert</td>
+          <td style="padding: 0.45em 0.4em;">Does the app start? One <span class="inline-code">assert</span> for data integrity.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.12);">
+          <td style="padding: 0.45em 0.4em;"><strong>2</strong></td>
+          <td style="padding: 0.45em 0.4em;">Regression test</td>
+          <td style="padding: 0.45em 0.4em;">Re-ran the same prompt before and after <span class="inline-code">.cursorrules</span> &mdash; did output change?</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.12);">
+          <td style="padding: 0.45em 0.4em;"><strong>3</strong></td>
+          <td style="padding: 0.45em 0.4em;">Property-based test</td>
+          <td style="padding: 0.45em 0.4em;">Invariants that always hold &mdash; sensor values in physical range, no nulls in cleaned data.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.12);">
+          <td style="padding: 0.45em 0.4em;"><strong>4</strong></td>
+          <td style="padding: 0.45em 0.4em;">Four assert categories</td>
+          <td style="padding: 0.45em 0.4em;">Value, Type, Range, Relational &mdash; one of each, on dashboard logic.</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(193,167,120,0.12);">
+          <td style="padding: 0.45em 0.4em;"><strong>5</strong></td>
+          <td style="padding: 0.45em 0.4em;">Contract test</td>
+          <td style="padding: 0.45em 0.4em;">API response shape matches your code's expectations &mdash; 401, 404, malformed JSON.</td>
+        </tr>
+        <tr>
+          <td style="padding: 0.45em 0.4em;"><strong>6</strong></td>
+          <td style="padding: 0.45em 0.4em;">Security test</td>
+          <td style="padding: 0.45em 0.4em;">RLS isolation (user A can't read user B's rows), input edge cases.</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <div class="slide-num">05 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 6 — Why Tests Stop Working (pivot)
+  -->
+  <section class="slide" id="s6">
+    <div class="overline">Why Tests Stop Working</div>
+    <h2>Failures Your Asserts Won't Catch</h2>
+    <div class="accent-line"></div>
+
+    <div class="num-feature">
+      <div class="num-circle">1</div>
+      <div class="num-text">
+        <strong>The output is different every run</strong>
+        <span><span class="inline-code">draft-cover-letter</span> never produces the same text twice. <span class="inline-code">assert draft == expected</span> is meaningless &mdash; there <em>is</em> no fixed expected value to compare against.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">2</div>
+      <div class="num-text">
+        <strong>Structure is right, content is wrong</strong>
+        <span><span class="inline-code">match-resume</span> returns <span class="inline-code">{score: 87, reasons: [...]}</span>. Schema check passes. But "reasons" cites a TensorFlow project the candidate never did. Hallucinated content, valid shape.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">3</div>
+      <div class="num-text">
+        <strong>User constraints quietly violated</strong>
+        <span>USER.md says <em>"never use the word synergy."</em> Cover letter uses synergy three times. No <span class="inline-code">assert</span> catches this without rewriting half the eval.</span>
+      </div>
+    </div>
+
+    <p style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim); text-align: center;">
+      Tests stop where determinism stops. To score these you first need to <em>see</em> them.
+    </p>
+
+    <div class="slide-num">06 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 7 — Anatomy of a Trace
+  -->
+  <section class="slide" id="s7">
+    <div class="overline">Free-Form Output</div>
+    <h2>Assertion Fails</h2>
+    <div class="accent-line"></div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="col-label" style="color: var(--gold);">Generated</div>
+        <p style="font-size: clamp(0.8rem, 1.3vw, 0.98rem); font-style: italic; line-height: 1.55; margin-bottom: 0.6rem;">
+          Dear <span style="color: var(--gold);">Anthropic team</span>,
+        </p>
+        <p style="font-size: clamp(0.8rem, 1.3vw, 0.98rem); font-style: italic; line-height: 1.55;">
+          <span style="color: var(--gold);">I'm writing to apply</span> for the Research Engineer <span style="color: var(--gold);">role</span>. <span style="color: var(--gold);">My work on</span> three production ML systems <span style="color: var(--gold);">makes me a strong fit for</span> your team.
+        </p>
+      </div>
+      <div class="card">
+        <div class="col-label" style="color: var(--gold);">Also Valid</div>
+        <p style="font-size: clamp(0.8rem, 1.3vw, 0.98rem); font-style: italic; line-height: 1.55; margin-bottom: 0.6rem;">
+          Dear <span style="color: var(--gold);">Anthropic hiring committee</span>,
+        </p>
+        <p style="font-size: clamp(0.8rem, 1.3vw, 0.98rem); font-style: italic; line-height: 1.55;">
+          <span style="color: var(--gold);">I'd like to be considered</span> for the Research Engineer <span style="color: var(--gold);">position</span>. <span style="color: var(--gold);">Having built</span> three production<span style="color: var(--gold);">-scale</span> ML systems, <span style="color: var(--gold);">I believe I'd be valuable to</span> your team.
+        </p>
+      </div>
+    </div>
+
+    <pre style="margin-top: clamp(0.6rem, 1.8vh, 1.2rem); padding: 0.7rem 1.2rem; text-align: center; font-size: clamp(0.9rem, 1.5vw, 1.1rem);"><code><span style="color: var(--green-soft);">assert</span> generated == expected   <span style="color: #d77;">&rarr; False</span></code></pre>
+
+    <p style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim); text-align: center;">
+      There is no single <em>expected</em> for free-form output. Score against criteria, not against a reference.
+    </p>
+
+    <div class="slide-num">07 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 7 — PATTERN 2: Golden Set
+  -->
+  <section class="slide" id="s8">
+    <div class="overline">SCORING METHOD</div>
+    <h2>Schema Scoring</h2>
+    <div class="accent-line"></div>
+
+    <p style="font-size: clamp(0.85rem, 1.4vw, 1.05rem); color: var(--fg); margin-bottom: clamp(0.5rem, 1.5vh, 1rem);">
+      Deterministic checks on structured output. Pass / fail. No judgment, no judge.
+    </p>
+
+    <pre style="font-size: clamp(1.1rem, 2.1vw, 1.65rem); padding: clamp(0.6rem, 1.5vh, 1rem) clamp(0.8rem, 2vw, 1.4rem); margin: clamp(0.8rem, 2vh, 1.4rem) 0 0; line-height: 1.7;"><code>output = run_skill(<span style="color: var(--gold);">"match-resume"</span>, goal)
+
+<span style="color: var(--green-soft);">assert</span> output[<span style="color: var(--gold);">"company"</span>]
+<span style="color: var(--green-soft);">assert</span> output[<span style="color: var(--gold);">"role"</span>]
+<span style="color: var(--green-soft);">assert isinstance</span>(output[<span style="color: var(--gold);">"score"</span>], <span style="color: var(--green-soft);">int</span>)
+<span style="color: var(--green-soft);">assert</span> <span style="color: var(--gold);">0</span> &lt;= output[<span style="color: var(--gold);">"score"</span>] &lt;= <span style="color: var(--gold);">100</span></code></pre>
+
+    <p style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim); text-align: center;">
+      <strong>When to use:</strong> structured outputs you control the shape of. Cheap. Brittle to format drift.
+    </p>
+
+    <div class="slide-num">08 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 8 — PATTERN 3: Schema Scoring
+  -->
+  <section class="slide" id="s9">
+    <div class="overline">SCORING METHOD</div>
+    <h2>Rubric Scoring</h2>
+    <div class="accent-line"></div>
+
+    <p style="font-size: clamp(0.85rem, 1.4vw, 1.05rem); color: var(--fg); margin-bottom: clamp(0.5rem, 1.5vh, 1rem);">
+      A <strong style="color: var(--gold);">rubric</strong> is your criteria. Score each output independently; no reference needed.
+    </p>
+
+    <ul style="font-size: clamp(2rem, 3.5vw, 2.7rem); line-height: 1.7; margin: clamp(0.8rem, 2vh, 1.4rem) 0 0;">
+      <li><strong style="color: var(--gold);">Relevance</strong> &mdash; addresses the actual user goal</li>
+      <li><strong style="color: var(--gold);">Factuality</strong> &mdash; no invented experience</li>
+      <li><strong style="color: var(--gold);">Format</strong> &mdash; matches your SOUL.md voice</li>
+    </ul>
+
+    <p style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim); text-align: center;">
+      <strong>When to use:</strong> any free-form output. <strong>Cost:</strong> human or judge time per case.
+    </p>
+
+    <div class="slide-num">09 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 9 — PATTERN 4: Rubric Scoring
+  -->
+  <section class="slide" id="s10">
+    <div class="overline">SCORING METHOD</div>
+    <h2>Pairwise Comparison</h2>
+    <div class="accent-line"></div>
+
+    <p style="font-size: clamp(0.85rem, 1.4vw, 1.05rem); color: var(--fg); margin-bottom: clamp(0.5rem, 1.5vh, 1rem);">
+      Ask <strong style="color: var(--gold);">"is A better than B?"</strong> instead of <em>"how good is A?"</em> &mdash; a <strong style="color: var(--gold);">controlled experiment</strong> for your evals.
+    </p>
+
+    <ul style="font-size: clamp(1.55rem, 2.8vw, 2.2rem); line-height: 1.7; margin: clamp(0.8rem, 2vh, 1.4rem) 0 0;">
+      <li><strong style="color: var(--gold);">Control:</strong> golden set, judge, rubric &mdash; held fixed</li>
+      <li><strong style="color: var(--gold);">Treatment:</strong> change <em>one</em> thing (model, prompt, parameter)</li>
+      <li><strong style="color: var(--gold);">Outcome:</strong> A wins / B wins / tie &rarr; win-rate</li>
+    </ul>
+
+    <p style="margin-top: clamp(0.6rem, 1.8vh, 1.2rem); font-size: clamp(0.95rem, 1.5vw, 1.15rem); color: var(--fg-dim);">
+      Humans (and judges) calibrate <em>relative</em> judgments better than absolute scores. Change two things at once and you can't tell which one moved the number.
+    </p>
+
+    <div class="slide-num">10 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 10 — PATTERN 5: LLM-as-Judge
+  -->
+  <section class="slide" id="s11">
+    <div class="overline">AUTOMATION</div>
+    <h2>LLM-as-Judge</h2>
+    <div class="accent-line"></div>
+
+    <pre><code><span style="color: var(--gold);"># judge.py &mdash; the entire pattern in 12 lines</span>
+<span style="color: var(--green-soft);">def</span> judge(user_goal, agent_output, rubric):
+    prompt = <span style="color: var(--gold);">f"""
+You are evaluating an agent's response.
+
+USER GOAL: {user_goal}
+AGENT OUTPUT: {agent_output}
+
+Score 0&ndash;3 on each dimension. Return JSON only.
+
+RUBRIC:
+{rubric}
+"""</span>
+    response = anthropic.messages.create(
+        model=<span style="color: var(--gold);">"claude-sonnet-4-6"</span>,   <span style="color: var(--gold);"># different family from prod</span>
+        max_tokens=<span style="color: var(--gold);">500</span>,
+        messages=[{<span style="color: var(--gold);">"role"</span>: <span style="color: var(--gold);">"user"</span>, <span style="color: var(--gold);">"content"</span>: prompt}],
+    )
+    <span style="color: var(--green-soft);">return</span> json.loads(response.content[<span style="color: var(--gold);">0</span>].text)</code></pre>
+
+    <p style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim);">
+      <strong>When to use:</strong> rubric scoring at scale. Catches what humans miss &mdash; and lies in predictable ways (next slide).
+    </p>
+
+    <div class="slide-num">11 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 11 — Judge Failure Modes
+  -->
+  <section class="slide" id="s12">
+    <div class="overline">When The Judge Lies</div>
+    <h2>Three Failure Modes</h2>
+    <div class="accent-line"></div>
+
+    <div class="num-feature">
+      <div class="num-circle">1</div>
+      <div class="num-text">
+        <strong>Position bias</strong>
+        <span>In A/B comparisons, the judge prefers whichever option you list first. <em>Fix:</em> randomize order, run both ways, average.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">2</div>
+      <div class="num-text">
+        <strong>Verbosity bias</strong>
+        <span>Longer outputs score higher even when shorter is better. <em>Fix:</em> normalize for length, or score concision explicitly in the rubric.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">3</div>
+      <div class="num-text">
+        <strong>Self-preference</strong>
+        <span>Claude judges prefer Claude outputs over GPT outputs, even when blinded. <em>Fix:</em> judge with a different model family than production.</span>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top: clamp(0.5rem, 1.5vh, 1rem);">
+      <p style="font-size: clamp(0.78rem, 1.25vw, 0.95rem); color: var(--fg);">
+        <strong style="color: var(--gold);">Always spot-check.</strong> Pick three judge scores per run and read them yourself. The judge is a tool, not an oracle.
+      </p>
+    </div>
+
+    <div class="slide-num">12 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 13 — PATTERN 7: Faithfulness Scoring
+  -->
+  <section class="slide" id="s13">
+    <div class="overline">DATA</div>
+    <h2>Golden Set</h2>
+    <div class="accent-line"></div>
+
+    <p style="font-size: clamp(0.85rem, 1.4vw, 1.05rem); color: var(--fg); margin-bottom: clamp(0.5rem, 1.5vh, 1rem);">
+      <strong style="color: var(--gold);">Golden set</strong> = hand-picked example inputs with expected behavior, frozen as your control. Same set every run.
+    </p>
+
+    <pre style="font-size: clamp(0.95rem, 1.75vw, 1.4rem); padding: clamp(0.6rem, 1.5vh, 1rem) clamp(0.8rem, 2vw, 1.4rem); margin: clamp(0.6rem, 1.8vh, 1rem) 0 0; line-height: 1.65;"><code><span style="color: var(--gold);">input:</span> "Apply to the Anthropic research engineer role"
+<span style="color: var(--gold);">expected:</span>
+  word_count: &lt; 450        <span style="color: var(--fg-dim);">&larr; checked by schema (P1)</span>
+  references:                <span style="color: var(--fg-dim);">&larr; checked by faithfulness (P5)</span>
+    - Anthropic's research
+    - candidate's projects
+  banned_words: [synergy]    <span style="color: var(--fg-dim);">&larr; checked by schema (P1)</span></code></pre>
+
+    <p style="margin-top: clamp(0.6rem, 1.8vh, 1.2rem); font-size: clamp(0.95rem, 1.5vw, 1.15rem); color: var(--fg-dim);">
+      10&ndash;15 of these = your golden set. Commit to <span class="inline-code">eval/golden.jsonl</span>. Each pattern that needs a reference reaches in for its slice.
+    </p>
+
+    <div class="slide-num">13 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 15 — PATTERN 7: Trace First
+  -->
+  <section class="slide" id="s14">
+    <div class="overline">INSTRUMENTATION</div>
+    <h2>Trace the Pipeline</h2>
+    <div class="accent-line"></div>
+
+    <div class="highlight-box" style="margin-bottom: clamp(0.5rem, 1.5vh, 1rem);">
+      <p style="font-size: clamp(0.95rem, 1.55vw, 1.2rem); color: var(--fg);">
+        Your workflow ran end-to-end, but the cover letter came out generic. <strong style="color: var(--gold);">Where do you look?</strong>
+      </p>
+    </div>
+
+    <pre style="font-size: clamp(0.9rem, 1.55vw, 1.25rem); padding: clamp(0.6rem, 1.5vh, 1rem) clamp(0.8rem, 2vw, 1.4rem); margin: 0; line-height: 1.65;"><code><span style="color: var(--gold);">user goal:</span> "Apply to the Anthropic research engineer role"
+
+&boxur;&boxh;&boxh; <span style="color: var(--green-soft);">[research-role]</span>         420ms  &nbsp;1,840 tok  $0.011  &rarr; 3 facts
+&boxur;&boxh;&boxh; <span style="color: var(--green-soft);">[match-resume]</span>          610ms  &nbsp;3,220 tok  $0.019  &rarr; <span style="color: #d77;">0 skills matched &#9888;</span>
+&boxur;&boxh;&boxh; <span style="color: var(--green-soft);">[draft-cover-letter]</span>  1,210ms  &nbsp;5,140 tok  $0.041  &rarr; 280 words
+&boxur;&boxh;&boxh; <span style="color: var(--green-soft);">[critique-draft]</span>       380ms  &nbsp;1,920 tok  $0.012  &rarr; <span style="color: #d77;">score 2/5 &#9888;</span></code></pre>
+
+    <p style="margin-top: clamp(0.6rem, 1.8vh, 1.2rem); font-size: clamp(0.95rem, 1.5vw, 1.15rem); color: var(--fg-dim); text-align: center;">
+      One row per skill. Trace answers all three at once: <strong style="color: var(--fg);">draft</strong> is the slowest and costliest, and <strong style="color: var(--fg);">match-resume</strong> is where the meaning leaked.
+    </p>
+
+    <div class="slide-num">14 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 14 — PATTERN 8: Regression + Ship Memo
+  -->
+  <section class="slide" id="s15">
+    <div class="overline">WORKFLOW</div>
+    <h2>Regression + Ship Memo</h2>
+    <div class="accent-line"></div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="col-label" style="color: var(--gold);">The five-step loop</div>
+        <ol style="font-size: clamp(0.76rem, 1.2vw, 0.92rem); padding-left: 1.3rem; line-height: 1.55;">
+          <li><strong>Freeze</strong> the golden set. No edits.</li>
+          <li><strong>Run</strong> on both old and new versions.</li>
+          <li><strong>Diff</strong> aggregate, per-case, latency, cost.</li>
+          <li><strong>Spot-check</strong> 3 regressions by hand.</li>
+          <li><strong>Memo</strong> the decision in 3 sentences.</li>
+        </ol>
+        <p style="margin-top: 0.4rem; font-size: clamp(0.7rem, 1.1vw, 0.85rem); color: var(--fg-dim);">
+          Trigger: model bump, prompt change, skill rewrite.
+        </p>
+      </div>
+      <div class="card">
+        <div class="col-label" style="color: var(--gold);">Ship memo template</div>
+        <pre style="font-size: clamp(0.58rem, 0.92vw, 0.7rem); padding: 0.4rem 0.6rem; margin: 0; line-height: 1.45;"><code><span style="color: var(--gold);"># Sonnet 4.6 &rarr; 4.7 (rubric 0&ndash;3)</span>
+
+| Metric        | 4.6  | 4.7  | &Delta;     |
+|---------------|------|------|--------|
+| Relevance     | 2.4  | 2.7  | +0.3   |
+| Factuality    | 2.6  | 2.5  | <span style="color: #d77;">&minus;0.1</span>   |
+| Format        | 2.5  | 2.6  | +0.1   |
+| Aggregate     | 2.50 | 2.60 | +0.10  |
+
+Regressions: Case 07, Case 12
+<span style="color: var(--green-soft);">Recommendation: Ship.</span> Add banned-words
+post-check before finalize.</code></pre>
+      </div>
+    </div>
+
+    <p style="margin-top: clamp(0.4rem, 1.2vh, 0.8rem); font-size: clamp(0.75rem, 1.2vw, 0.9rem); color: var(--fg-dim); text-align: center;">
+      <strong>When to use:</strong> any time something upstream of your agent changes.
+    </p>
+
+    <div class="slide-num">15 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 15 — Statistical Rigor
+  -->
+  <section class="slide" id="s16">
+    <div class="overline">Before You Trust The Deltas</div>
+    <h2>Statistical Rigor</h2>
+    <div class="accent-line"></div>
+
+    <div class="num-feature">
+      <div class="num-circle">1</div>
+      <div class="num-text">
+        <strong>LLMs are stochastic &mdash; run each case multiple times</strong>
+        <span>Temperature 0 is not always reproducible. Run N=3 per case at minimum. Report mean and variance, not a single score.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">2</div>
+      <div class="num-text">
+        <strong>15 cases &times; 3 runs = 45 data points</strong>
+        <span>Anything less is anecdote. A &Delta;0.1 on n=15 is noise; on n=150 it is signal. Confidence intervals decide.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">3</div>
+      <div class="num-text">
+        <strong>Measure judge&ndash;human agreement</strong>
+        <span>Spot-check 20% of judge scores by hand. Compute Cohen's kappa. Below 0.6 means your rubric is ambiguous &mdash; fix the rubric, not the agent.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">4</div>
+      <div class="num-text">
+        <strong>Bootstrap confidence intervals</strong>
+        <span>Five lines of <span class="inline-code">scipy</span> give you a 95% CI on any score delta. Add it to your eval runner once; never argue noise-vs-signal again.</span>
+      </div>
+    </div>
+
+    <div class="slide-num">16 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 17 — Lab: Probe Your Agentic OS
+  -->
+  <section class="slide" id="s17">
+    <div class="overline">Discussion</div>
+    <h2>Probe Your Agentic OS</h2>
+    <div class="accent-line"></div>
+
+    <pre style="padding: clamp(0.5rem, 1.3vh, 0.9rem) clamp(0.7rem, 1.7vw, 1.2rem); margin: 0 auto clamp(0.5rem, 1.5vh, 0.9rem); text-align: center; white-space: pre-wrap; word-break: break-word; line-height: 1.25;"><code style="font-size: clamp(2.6rem, 4.2vw, 3.8rem) !important; line-height: 1.3;"><span style="color: var(--green-soft);">[research-role]</span> &rarr; <span style="color: var(--green-soft);">[match-resume]</span> &rarr; <span style="color: var(--green-soft);">[draft-cover-letter]</span></span></code></pre>
+
+
+    <div class="two-col">
+      <div class="card">
+        <div class="col-label" style="color: var(--gold);">Symptom A &mdash; Quality</div>
+        <p style="font-size: clamp(3.6rem, 5.6vw, 4.7rem); color: var(--fg); margin: 0 0 0.6rem; line-height: 1.2;">
+          &ldquo;The cover letter comes out <strong>generic</strong>.&rdquo;
+        </p>
+      </div>
+      <div class="card">
+        <div class="col-label" style="color: var(--gold);">Symptom B &mdash; Performance</div>
+        <p style="font-size: clamp(3.6rem, 5.6vw, 4.7rem); color: var(--fg); margin: 0 0 0.6rem; line-height: 1.2;">
+          &ldquo;<span class="inline-code">draft-cover-letter</span> is <strong>~half</strong> of latency and cost.&rdquo;
+        </p>
+      </div>
+    </div>
+
+    <div class="slide-num">17 / 18</div>
+  </section>
+
+  <!-- ============================================================
+     SLIDE 17 — Key Takeaways
+  -->
+  <section class="slide" id="s18">
+    <div class="overline">Key Takeaways</div>
+    <h2>Key Takeaways</h2>
+    <div class="accent-line"></div>
+
+    <div class="num-feature">
+      <div class="num-circle">1</div>
+      <div class="num-text">
+        <strong>Tests tell you it ran. Evals tell you it was good.</strong>
+        <span>Two different questions, two different tools. Confusing them is the most common AI-product failure.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">2</div>
+      <div class="num-text">
+        <strong>Three things to build: scoring methods, data, pipeline.</strong>
+        <span>Scoring methods (schema, rubric, pairwise, judge) tell you good vs bad. Data (golden set) is what you score against. Pipeline (trace, regression) is how you run it every time something changes.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">3</div>
+      <div class="num-text">
+        <strong>Trace first, eval second.</strong>
+        <span>One row per step answers all three questions at once: where did it break, what's slow, what cost too much. Everything else sits on top of the trace.</span>
+      </div>
+    </div>
+    <div class="num-feature">
+      <div class="num-circle">4</div>
+      <div class="num-text">
+        <strong>The ship memo is the deliverable.</strong>
+        <span>Same rubric dimensions, old vs new, regressions called out, recommendation in one line. Bring this every time you change a model or a prompt.</span>
+      </div>
+    </div>
+
+    <div class="slide-num">18 / 18</div>
+  </section>
+
+  <script src="js/slides.js"></script>
+  <script src="js/site-nav.js"></script>
+</body>
+
+</html>
