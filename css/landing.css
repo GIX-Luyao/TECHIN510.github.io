@@ -420,6 +420,51 @@
   transform: translateY(-2px);
 }
 
+.week-card-static {
+  opacity: 0.7;
+  cursor: default;
+  border-style: dashed;
+}
+
+.week-card-static:hover {
+  border-color: rgba(193, 167, 120, 0.1);
+  transform: none;
+}
+
+/* Multi-link week cards (weeks with bonus decks) */
+.week-card-multi {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.week-card-main {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  flex-grow: 1;
+}
+
+.week-card-bonus {
+  display: block;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: clamp(0.65rem, 0.95vw, 0.78rem);
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  padding: clamp(0.6rem, 1.2vw, 0.85rem) clamp(1rem, 2vw, 1.5rem);
+  border-top: 1px solid rgba(193, 167, 120, 0.12);
+  background: rgba(193, 167, 120, 0.04);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.week-card-bonus:hover {
+  background: rgba(193, 167, 120, 0.1);
+  color: var(--gold-bright);
+}
+
 .week-card-num {
   font-family: var(--font-mono);
   font-size: clamp(0.6rem, 1vw, 0.75rem);
